@@ -1,0 +1,84 @@
+﻿@page "/"
+@using Syncfusion.Blazor.PivotView
+@using ExcelCargoApp.Data
+@using ExcelCargoAppRemaster.Data
+@inject RaporService raporService
+
+
+@if (rapors == null)
+{
+    <p>Not Found !</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>SIRA_NO</th>
+                <th>ADET</th>
+                <th>KG_DESİ</th>
+                <th>MESAFE</th>
+                <th>UCRET</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (var rapor in rapors)
+            {
+
+
+
+                <tr>
+                    <td>@rapor.SIRA_NO</td>
+                    <td>@rapor.ADET</td>
+                    <td>@rapor.KG_DESİ</td>
+                    <td>@rapor.MESAFE</td>
+                    <td>@rapor.UCRET</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+<SfPivotView TValue="Rapor" Height="560" Width="1200" ShowGroupingBar="true" ShowFieldList="true">
+    <PivotViewDataSourceSettings DataSource="@dataSource">
+        <PivotViewColumns>
+            <PivotViewColumn Name=></PivotViewColumn>
+            <PivotViewColumn Name=></PivotViewColumn>
+        </PivotViewColumns>
+        <PivotViewRows>
+            <PivotViewRow Name=></PivotViewRow>
+        </PivotViewRows>
+        <PivotViewValues>
+            <PivotViewValue Name=Ucret Caption="Toplam Ucret" Type="SummaryTypes.Sum"></PivotViewValue>
+            <PivotViewValue Name="Miktar" Caption="Toplam Miktar" Type="SummaryTypes.Sum"></PivotViewValue>
+        </PivotViewValues>
+        <PivotViewFilters>
+            <PivotViewFilter Name="Kargolar"></PivotViewFilter>
+        </PivotViewFilters>
+        <PivotViewFormatSettings>
+            <PivotViewFormatSetting Name="Amount" Format="C"></PivotViewFormatSetting>
+        </PivotViewFormatSettings>
+    </PivotViewDataSourceSettings>
+</SfPivotView>
+
+
+@code
+{
+    public List<Rapor> rapors = new List<Rapor>();
+    public List<Rapor> dataSource { get; set; }
+    private List<Rapor> ExcelCargo()
+    {
+        rapors = raporService.GetRapors();
+        return rapors;
+
+    }
+    protected override void OnInitialized()
+    {
+        ExcelCargo();
+        base.OnInitialized();
+        this.dataSource = raporService.GetRapors();
+
+    }
+}
